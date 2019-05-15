@@ -8,6 +8,27 @@ detail in:  [lt-tree for Lua表存储优化](<http://www.lt-tree.com/2019/05/12/
 
 <br/>
 
+# 版本记录
+
+## v0.0.1
+
+- 添加文件
+  - CompressLua.py  ： 数据压缩脚本文件
+  - BEBase.py  ：基础模块文件
+  - six.py  ：所需模块，作用：兼容Python2与Python3的库
+  - slpp.py  ：所需模块，作用：将lua的table结构转化成 python的dictionary结构
+
+## v0.0.2
+
+- 修改：
+  - CompressLua.py
+    - 添加忽略文件列表
+    - 修改输出的lua内部local变量引用错序问题
+
+
+
+<br/>
+
 
 
 ex:
@@ -233,10 +254,11 @@ do
 	for k, v in pairs(personal_info) do
 		setmetatable(v, base)
 	end
-	base.__metatable = __default_table
+	base.__metatable = false
 end
 
 return personal_info
+
 
 ```
 

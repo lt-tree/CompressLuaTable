@@ -45,15 +45,6 @@ IGNORE_FILE_LIST = {
 ##
 
 def count_dict_deep(dict_temp):
-    """Count dictionary's deep
-
-        Args:
-            dict_temp: dict
-
-        Returns:
-            int : deep
-    """
-    
     deep = 0
     for item in dict_temp.values():
         if isinstance(item, dict):
@@ -64,15 +55,6 @@ def count_dict_deep(dict_temp):
     return deep+1
 
 def calc_weight(obj1):
-    """Calculate obj's weight
-
-        Args:
-            obj1: tuple[dict's string, dict's frequency]
-        
-        Returns:
-            int : weight
-    """
-
     dict1 = eval(obj1[0])
     times1 = obj1[1]
 
@@ -80,6 +62,29 @@ def calc_weight(obj1):
     ans = deep1 + 1/times1
 
     return ans
+
+def get_final_frequency_item(dict_frequency):
+    """Get final frequency item
+        
+        Different python version have different process for same frequency.
+        At first, get most freqency items then sort keys to find out final most frequency item
+        
+        Args:
+            dict_frequency: dict
+        Returns:
+            string: final most frequency item
+    """
+
+    most_frequency_items = {}
+    most_frequency = -1
+    for key, value in sorted(dict_frequency.items(), key=lambda item:item[1], reverse=True):
+        if most_frequency == -1:
+            most_frequency = value
+            most_frequency_items[key] = value
+        elif most_frequency == value:
+            most_frequency_items[key] = value
+
+    return sorted(most_frequency_items.items(), key=lambda item:str(item[0]))[0][0]
 
 def count_table_frequency(unit_dict, dict_frequency):
     """Count table frequency
@@ -210,7 +215,6 @@ def output_file(table_name, file_path, repeat_dict, final_dict, default_dict):
 
     # output repeat dict
     for dictStr, index in sorted(repeat_dict.items(), key=lambda item:item[1]):
-
         # replace repeat item by repeat_dict 
         repeat_dict_item = eval(dictStr)
         replace_repeat_dict(repeat_dict_item, repeat_dict, index)
@@ -270,11 +274,17 @@ def structure_repeat_dict(dict_frequency):
             dict; {dict's string : repeat index}
     """
 
-    repeat_dict = {}
-    repeat_index = 1
-
+    repeat_frequency_dict = {}
     for key, value in sorted(dict_frequency.items(), key=lambda x:calc_weight(x)):
         if value > 1:
+            if value not in repeat_frequency_dict.keys():
+                repeat_frequency_dict[value] = []
+            repeat_frequency_dict[value].append(key)
+
+    repeat_dict = {}
+    repeat_index = 1
+    for frequency, keys in sorted(repeat_frequency_dict.items(), key=lambda item:item[0], reverse=True):
+        for key in sorted(keys):
             repeat_dict[key] = repeat_index
             repeat_index = repeat_index + 1
 
@@ -293,18 +303,17 @@ def structure_default_dict(excel_dict, all_item_frequency):
     """
 
     excel_item = {}
-    for item in excel_dict.values():
+    for key, item in sorted(excel_dict.items()):
         excel_item = item
         break
 
     default_dict = {}
-    for key, value in excel_item.items():
-        for k, v in sorted(all_item_frequency[key].items(), key=lambda item:item[1], reverse=True):
-            if isinstance(value, dict):
-                default_dict[key] = eval(k)
-            else:
-                default_dict[key] = k
-            break
+    for key, value in sorted(excel_item.items()):
+        item_frequency = get_final_frequency_item(all_item_frequency[key])
+        if isinstance(value, dict):
+            default_dict[key] = eval(item_frequency)
+        else:
+            default_dict[key] = item_frequency
 
     return default_dict
 
@@ -323,11 +332,11 @@ def structure_final_dict(excel_dict, default_dict):
     """
 
     final_dict = {}
-    for key, value in excel_dict.items():
+    for key, value in sorted(excel_dict.items()):
         final_dict[key] = {}
 
         if isinstance(value, dict):
-            for k, v in value.items():
+            for k, v in sorted(value.items()):
                 if default_dict[k] != v:
                     final_dict[key][k] = v
         else:

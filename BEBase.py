@@ -80,7 +80,7 @@ class BEConvert(object):
         """
 
         prefix_tab = "\t" * deep
-        for key, value in lua_dict.items():
+        for key, value in sorted(lua_dict.items()):
             if isinstance(key, int):
                 file_handler.write("%s[%s] = " % (prefix_tab, key))
             elif isinstance(key, str):
@@ -101,8 +101,15 @@ class BEConvert(object):
                     file_handler.write("%s,\n" % (value))
                 else:
                     file_handler.write("\'%s\',\n" % (value))
+            elif isinstance(value, bool):
+                file_handler.write("%s,\n" % (str(value).lower()))
+            elif value is None:
+                file_handler.write("nil,\n")
             else:
                 file_handler.write("%s,\n" % (value))
+
+    def convert_sqlite_dict(self):
+        pass
 
 
 
@@ -117,6 +124,15 @@ class BEOutput(object):
         """
         
         print(json.dumps(content, indent=4, ensure_ascii=False))
+
+    def format_show_file(self, file_path, content):
+        """
+
+        """
+        file_handler = codecs.open(file_path, 'w', encoding='utf-8')
+        file_handler.write(json.dumps(content, indent=4, ensure_ascii=False))
+        file_handler.close()
+
 
 
 BEOutput = BEOutput()

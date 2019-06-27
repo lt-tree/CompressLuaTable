@@ -25,7 +25,16 @@ detail in:  [lt-tree for Lua表存储优化](<http://www.lt-tree.com/2019/05/12/
     - 添加忽略文件列表
     - 修改输出的lua内部local变量引用错序问题
 
+## v0.0.3
 
+- 修改
+  - CompressLua.py
+    - 添加 获取对应key最频繁项方法
+    - 对于遍历的部分均加排序
+    - 
+  - BEBase.py
+    - 优化dict转lua文件方法：固定输出顺序，添加对bool类型及None类型的处理
+    - 添加 输出到文件的方法
 
 <br/>
 
@@ -173,6 +182,7 @@ local __rt2 = {
 local personal_info = {
 	[1] = {
 		age = 10,
+		name = 'Lucas',
 	},
 	[2] = {
 		id = 2,
@@ -180,73 +190,72 @@ local personal_info = {
 		sex = 'F',
 	},
 	[3] = {
-		id = 3,
-		name = 'Paul',
 		age = 16,
 		des = {
 			[1] = 'aaaaaa',
 			[2] = 'cccccc',
 		},
+		id = 3,
+		name = 'Paul',
 	},
 	[4] = {
-		id = 4,
-		name = 'Tom',
 		des = {
 			[1] = 'cccccc',
 		},
+		id = 4,
+		name = 'Tom',
 	},
 	[5] = {
-		id = 5,
-		name = 'Jerry',
 		age = 10,
 		des = __rt2,
+		id = 5,
+		name = 'Jerry',
 	},
 	[6] = {
+		age = 17,
 		id = 6,
 		name = 'Amy',
 		sex = 'F',
-		age = 17,
 	},
 	[7] = {
+		des = __rt2,
 		id = 7,
 		name = 'Henry',
-		des = __rt2,
 	},
 	[8] = {
-		id = 8,
-		name = 'David',
 		des = {
 			[1] = 'bbbbbb',
 		},
+		id = 8,
+		name = 'David',
 	},
 	[9] = {
-		id = 9,
-		name = 'Cersei',
-		sex = 'F',
 		age = 20,
 		des = {
 			[1] = 'aaaaaa',
 		},
+		id = 9,
+		name = 'Cersei',
+		sex = 'F',
 	},
 	[10] = {
+		des = __rt2,
 		id = 10,
 		name = 'Joffery',
-		des = __rt2,
 	},
 	[11] = {
-		id = 11,
-		name = 'Alayaya',
-		sex = 'F',
 		age = 11,
+		id = 11,
+		sex = 'F',
 	},
 }
 
 local __default_table = {
-	id = 1,
-	name = 'Lucas',
-	sex = 'M',
 	age = 12,
 	des = __rt1,
+	id = 1,
+	name = 'Alayaya',
+	sex = 'M',
 }
 
 do
@@ -258,7 +267,6 @@ do
 end
 
 return personal_info
-
 
 ```
 

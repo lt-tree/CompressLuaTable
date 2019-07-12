@@ -31,10 +31,16 @@ detail in:  [lt-tree for Lua表存储优化](<http://www.lt-tree.com/2019/05/12/
   - CompressLua.py
     - 添加 获取对应key最频繁项方法
     - 对于遍历的部分均加排序
-    - 
   - BEBase.py
     - 优化dict转lua文件方法：固定输出顺序，添加对bool类型及None类型的处理
     - 添加 输出到文件的方法
+
+## v0.0.4
+
+- 修改
+  - CompressLua.py
+    - 自己实现dictionary转string方法，避免string不同
+    - 修改比较重复字典方法，由比较字符串改为比较字典
 
 <br/>
 

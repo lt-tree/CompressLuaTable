@@ -63,6 +63,22 @@ def calc_weight(obj1):
 
     return ans
 
+def get_dict_str(dict):
+    dict_str = '{'
+    for key, value in sorted(dict.items()):
+        if isinstance(key, str):
+            dict_str = dict_str + '\'' + key + '\': '
+        else:
+            dict_str = dict_str + str(key) + ':'
+
+        if isinstance(value, str):
+            dict_str = dict_str + '\'' + value + '\', '
+        else:
+            dict_str = dict_str + str(value) + ','
+    dict_str = dict_str + '}'
+
+    return dict_str
+
 def get_final_frequency_item(dict_frequency):
     """Get final frequency item
         
@@ -96,7 +112,7 @@ def count_table_frequency(unit_dict, dict_frequency):
             dict_frequency: dict, the record's set
     """
 
-    unit_str = str(unit_dict)
+    unit_str = get_dict_str(unit_dict)
     if unit_str in dict_frequency:
         dict_frequency[unit_str] = dict_frequency[unit_str] + 1
     else:
@@ -152,7 +168,7 @@ def traverse_table(excel_dict, dict_frequency, item_frequency):
         if isinstance(excel_dict[key], dict):
             count_table_frequency(excel_dict[key], dict_frequency)
 
-            for k, v in excel_dict[key].items():
+            for k, v in sorted(excel_dict[key].items()):
                 count_table_value_frequency(k, v, item_frequency)
 
 
@@ -169,11 +185,12 @@ def check_repeat_dict(item_dict, repeat_dict):
             int
     """
 
-    dict_str = str(item_dict)
-    if dict_str in repeat_dict.keys():
-        return repeat_dict[dict_str]
-    else:
-        return -1
+    for repeat_item in repeat_dict.keys():
+        item = eval(repeat_item)
+        if item == item_dict:
+            return repeat_dict[repeat_item]    
+    return -1
+
 
 def replace_repeat_dict(item_dict, repeat_dict, cur_index = -1):
     """Replace repeat dict
